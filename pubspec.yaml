@@ -1,0 +1,70 @@
+name: peek
+description: Peek™ System Management - Complete system operations tracking
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Core dependencies
+  cupertino_icons: ^1.0.6
+  
+  # Database
+  sqflite: ^2.3.0
+  path: ^1.9.0
+  path_provider: ^2.1.1
+  
+  # State Management
+  provider: ^6.1.1
+  
+  # Date and Time
+  intl: ^0.19.0
+  
+  # Location/GPS
+  geolocator: ^10.1.0
+  
+  # Storage
+  shared_preferences: ^2.2.2
+  
+  # File System
+  permission_handler: ^11.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_name: ^0.0.1
+
+  flutter_lints: ^3.0.0
+
+# App Icon Configuration
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
+  adaptive_icon_background: "#87CEEB"
+  adaptive_icon_foreground: "assets/icon/icon.png"
+
+# App Name Configuration
+flutter_launcher_name:
+  name: "Peek™"
+
+flutter:
+  uses-material-design: true
+
+  # Assets
+  # assets:
+  #   - assets/images/
+  #   - assets/icons/
+
+  # Fonts (if needed)
+  # fonts:
+  #   - family: Roboto
+  #     fonts:
+  #       - asset: fonts/Roboto-Regular.ttf
+  #       - asset: fonts/Roboto-Bold.ttf
+  #         weight: 700
