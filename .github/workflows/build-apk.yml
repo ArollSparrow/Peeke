@@ -1,1 +1,125 @@
 
+name: Build Flutter APK
+
+on:
+  # Trigger on push to main branch
+  push:
+    branches: [ main, master ]
+  
+  # Trigger on pull request
+  pull_request:
+    branches: [ main, master ]
+  
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Flutter APK
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      # Step 2: Setup Java (required for Android build)
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      
+      # Step 3: Setup Flutter
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
+          channel: 'stable'
+          cache: true
+      
+      # Step 4: Verify Flutter installation
+      - name: Verify Flutter
+        run: |
+          flutter --version
+          flutter doctor -v
+      
+      # Step 5: Get Flutter dependencies
+      - name: Get Dependencies
+        run: flutter pub get
+      
+      # Step 6: Analyze code (optional but recommended)
+      - name: Analyze Code
+        run: flutter analyze
+        continue-on-error: true
+      
+      # Step 7: Build APK (Release mode)
+      - name: Build APK
+        run: flutter build apk --release
+      
+      # Step 8: Build split APKs (optional - creates smaller APKs per architecture)
+      - name: Build Split APKs
+        run: flutter build apk --split-per-abi --release
+      
+      # Step 9: Rename APK files for clarity
+      - name: Rename APK Files
+        run: |
+          cd build/app/outputs/flutter-apk
+          mv app-release.apk peek-universal-release.apk
+          mv app-armeabi-v7a-release.apk peek-armeabi-v7a-release.apk || true
+          mv app-arm64-v8a-release.apk peek-arm64-v8a-release.apk || true
+          mv app-x86_64-release.apk peek-x86_64-release.apk || true
+      
+      # Step 10: Upload Universal APK as artifact
+      - name: Upload Universal APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: peek-universal-apk
+          path: build/app/outputs/flutter-apk/peek-universal-release.apk
+          retention-days: 30
+      
+      # Step 11: Upload ARM64 APK (most common for modern devices)
+      - name: Upload ARM64 APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: peek-arm64-apk
+          path: build/app/outputs/flutter-apk/peek-arm64-v8a-release.apk
+          retention-days: 30
+        continue-on-error: true
+      
+      # Step 12: Upload ARMv7 APK (for older devices)
+      - name: Upload ARMv7 APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: peek-armv7-apk
+          path: build/app/outputs/flutter-apk/peek-armeabi-v7a-release.apk
+          retention-days: 30
+        continue-on-error: true
+      
+      # Step 13: Create release summary
+      - name: Create Build Summary
+        run: |
+          echo "## 🎉 Build Successful!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📱 APK Files Generated:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cd build/app/outputs/flutter-apk
+          for file in *.apk; do
+            size=$(du -h "$file" | cut -f1)
+            echo "- **$file** ($size)" >> $GITHUB_STEP_SUMMARY
+          done
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Download Artifacts:" >> $GITHUB_STEP_SUMMARY
+          echo "Go to the **Actions** tab → Click on this workflow run → Download artifacts at the bottom" >> $GITHUB_STEP_SUMMARY
+      
+      # Step 14: Display APK info
+      - name: Display APK Info
+        run: |
+          cd build/app/outputs/flutter-apk
+          echo "==================================="
+          echo "📱 APK Build Complete!"
+          echo "==================================="
+          ls -lh *.apk
+          echo "==================================="
+          echo "✅ Download from Actions artifacts"
+          echo "==================================="
