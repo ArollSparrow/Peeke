@@ -10,7 +10,7 @@
         android:maxSdkVersion="32" />
 
     <application
-        android:label="Peek™"
+        android:label="Peek"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         
