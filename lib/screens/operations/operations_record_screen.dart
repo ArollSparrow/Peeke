@@ -10,14 +10,14 @@ import '../../utils/app_utils.dart';
 import '../../services/database_service.dart';
 import '../../models/operation_config.dart';
 
-class OperationsRecordScreenComplete extends StatefulWidget {
-  const OperationsRecordScreenComplete({Key? key}) : super(key: key);
+class OperationsRecordScreenextends StatefulWidget {
+  const OperationsRecordScreen({Key? key}) : super(key: key);
 
   @override
-  State<OperationsRecordScreenComplete> createState() => _OperationsRecordScreenCompleteState();
+  State<OperationsRecordScreen> createState() => _OperationsRecordScreenState();
 }
 
-class _OperationsRecordScreenCompleteState extends State<OperationsRecordScreenComplete> {
+class _OperationsRecordScreenState extends State<OperationsRecordScreen> {
   // State variables - equivalent to Python class attributes
   int? _selectedClientId;
   String? _selectedClientName;
