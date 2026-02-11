@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.peek">   <!-- Must match applicationId in build.gradle -->
+    package="com.peekopsys.peek">   <!-- Must match applicationId in build.gradle -->
 
     <!-- Permissions (keep as is) -->
     <uses-permission android:name="android.permission.INTERNET" />
