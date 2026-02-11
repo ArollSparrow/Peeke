@@ -37,8 +37,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1
-  flutter_launcher_name: ^0.0.1
-
   flutter_lints: ^3.0.0
 
 # App Icon Configuration
@@ -49,17 +47,12 @@ flutter_icons:
   adaptive_icon_background: "#87CEEB"
   adaptive_icon_foreground: "assets/icon/icon.png"
 
-# App Name Configuration
-flutter_launcher_name:
-  name: "Peek™"
-
 flutter:
   uses-material-design: true
 
-  # Assets
-  # assets:
-  #   - assets/images/
-  #   - assets/icons/
+  # Assets - Uncomment when you add icon
+  assets:
+    - assets/icon/
 
   # Fonts (if needed)
   # fonts:
