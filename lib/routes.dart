@@ -13,16 +13,16 @@ import 'screens/landing/maintenance_menu.dart';
 import 'screens/landing/inventory_menu.dart';
 
 // Registration Screens (COMPLETE)
-import 'screens/registration/client_registration_screen_complete.dart';
-import 'screens/registration/system_registration_screen_complete.dart';
-import 'screens/registration/update_system_screen_complete.dart';
-import 'screens/registration/select_system_screen_complete.dart';
-import 'screens/registration/delete_system_screen_complete.dart';
+import 'screens/registration/client_registration_screen.dart';
+import 'screens/registration/system_registration_screen.dart';
+import 'screens/registration/update_system_screen.dart';
+import 'screens/registration/select_system_screen.dart';
+import 'screens/registration/delete_system_screen.dart';
 
 // Operations Screens (COMPLETE)
-import 'screens/operations/operations_record_screen_complete.dart';
-import 'screens/operations/operations_reports_menu_screen_complete.dart';
-import 'screens/operations/operations_reports_display_screen_complete.dart';
+import 'screens/operations/operations_record_screen.dart';
+import 'screens/operations/operations_reports_menu_screen.dart';
+import 'screens/operations/operations_reports_display_screen.dart';
 
 // Dashboard (PLACEHOLDER)
 import 'screens/dashboard/dashboard_placeholder.dart';
@@ -99,47 +99,47 @@ class Routes {
       // ==================== REGISTRATION (COMPLETE) ====================
       case clientRegistration:
         return MaterialPageRoute(
-          builder: (_) => const ClientRegistrationScreenComplete(),
+          builder: (_) => const ClientRegistrationScreen(),
         );
       
       case systemRegistration:
         final clientData = args as Map<String, dynamic>?;
         return MaterialPageRoute(
-          builder: (_) => SystemRegistrationScreenComplete(clientData: clientData),
+          builder: (_) => SystemRegistrationScreen(clientData: clientData),
         );
       
       case selectSystem:
         return MaterialPageRoute(
-          builder: (_) => const SelectSystemScreenComplete(),
+          builder: (_) => const SelectSystemScreen(),
         );
       
       case updateSystem:
         final systemId = args as int?;
         return MaterialPageRoute(
-          builder: (_) => UpdateSystemScreenComplete(systemId: systemId),
+          builder: (_) => UpdateSystemScreen(systemId: systemId),
         );
       
       case deleteSystem:
         final systemId = args as int?;
         return MaterialPageRoute(
-          builder: (_) => DeleteSystemScreenComplete(systemId: systemId),
+          builder: (_) => DeleteSystemScreen(systemId: systemId),
         );
 
       // ==================== OPERATIONS (COMPLETE) ====================
       case operationsRecord:
         return MaterialPageRoute(
-          builder: (_) => const OperationsRecordScreenComplete(),
+          builder: (_) => const OperationsRecordScreen(),
         );
       
       case operationsReportsMenu:
         return MaterialPageRoute(
-          builder: (_) => const OperationsReportsMenuScreenComplete(),
+          builder: (_) => const OperationsReportsMenuScreen(),
         );
       
       case operationsReportsDisplay:
         final reportArgs = args as Map<String, dynamic>?;
         return MaterialPageRoute(
-          builder: (_) => OperationsReportsDisplayScreenComplete(
+          builder: (_) => OperationsReportsDisplayScreen(
             arguments: reportArgs,
           ),
         );
