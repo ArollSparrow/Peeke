@@ -43,7 +43,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.peek"   // Change to your actual package name
+        applicationId "com.peekopsys.peek"   // Change to your actual package name
         minSdkVersion 21                  // 23+ recommended for geolocator, but 21 works with recent versions
         targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
