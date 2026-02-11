@@ -24,14 +24,6 @@ import 'screens/operations/operations_record_screen.dart';
 import 'screens/operations/operations_reports_menu_screen.dart';
 import 'screens/operations/operations_reports_display_screen.dart';
 
-// Dashboard (PLACEHOLDER)
-import 'screens/dashboard/dashboard_placeholder.dart';
-
-// Inventory (PLACEHOLDER)
-import 'screens/inventory/inventory_placeholder.dart';
-
-// Maintenance (PLACEHOLDER)
-import 'screens/maintenance/maintenance_placeholder.dart';
 
 class Routes {
   // Landing and Menu routes
