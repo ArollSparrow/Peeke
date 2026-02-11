@@ -6,19 +6,19 @@ import 'package:flutter/material.dart';
 import '../../utils/app_utils.dart';
 import '../../services/database_service.dart';
 
-class DeleteSystemScreenComplete extends StatefulWidget {
+class DeleteSystemScreenextends StatefulWidget {
   final int? systemId;
 
-  const DeleteSystemScreenComplete({
+  const DeleteSystemScreen({
     Key? key,
     this.systemId,
   }) : super(key: key);
 
   @override
-  State<DeleteSystemScreenComplete> createState() => _DeleteSystemScreenCompleteState();
+  State<DeleteSystemScreen> createState() => _DeleteSystemScreenState();
 }
 
-class _DeleteSystemScreenCompleteState extends State<DeleteSystemScreenComplete> {
+class _DeleteSystemScreenState extends State<DeleteSystemScreen> {
   int? _systemId;
   Map<String, dynamic>? _systemData;
   bool _isLoading = true;
