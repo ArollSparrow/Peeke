@@ -1,8 +1,10 @@
 // lib/services/database_service.dart - COMPLETE DatabaseService
 // Enhanced with all methods needed by registration screens
 
+import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 class DatabaseService {
   static final DatabaseService instance = DatabaseService._init();
@@ -114,10 +116,6 @@ class DatabaseService {
   Future<void> init() async {
     await database;
   }
-
-  Future<void> close() async {
-    final db = await instance.database;
-    await db.close();
   }
 
   // ==================== CLIENT OPERATIONS ====================
