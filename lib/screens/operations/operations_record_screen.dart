@@ -11,7 +11,7 @@ import '../../services/database_service.dart';
 import '../../models/operation_config.dart';
 
 class OperationsRecordScreen extends StatefulWidget {
-  const OperationsRecordScreen({super.key};
+  const OperationsRecordScreen({super.key});
 
   @override
   State<OperationsRecordScreen> createState() => _OperationsRecordScreenState();

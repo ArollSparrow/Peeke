@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import '../../utils/app_utils.dart';
 
 class OperationsReportsMenuScreen extends StatefulWidget {
-  const OperationsReportsMenuScreen({super.key};
+  const OperationsReportsMenuScreen({super.key});
 
   @override
   State<OperationsReportsMenuScreen> createState() =>
