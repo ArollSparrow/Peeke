@@ -9,21 +9,21 @@ import '../../utils/app_utils.dart';
 import '../../services/database_service.dart';
 import '../../models/operation_config.dart';
 
-class OperationsReportsDisplayScreenComplete extends StatefulWidget {
+class OperationsReportsDisplayScreen extends StatefulWidget {
   final Map<String, dynamic>? arguments;
 
-  const OperationsReportsDisplayScreenComplete({
+  const OperationsReportsDisplayScreen({
     Key? key,
     this.arguments,
   }) : super(key: key);
 
   @override
-  State<OperationsReportsDisplayScreenComplete> createState() =>
-      _OperationsReportsDisplayScreenCompleteState();
+  State<OperationsReportsDisplayScreen> createState() =>
+      _OperationsReportsDisplayScreenState();
 }
 
-class _OperationsReportsDisplayScreenCompleteState
-    extends State<OperationsReportsDisplayScreenComplete> {
+class _OperationsReportsDisplayScreenState
+    extends State<OperationsReportsDisplayScreen> {
   // State variables
   String _period = 'daily';
   String _reportDate = '';

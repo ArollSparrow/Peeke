@@ -10,8 +10,8 @@ import '../../utils/app_utils.dart';
 import '../../services/database_service.dart';
 import '../../models/operation_config.dart';
 
-class OperationsRecordScreenextends StatefulWidget {
-  const OperationsRecordScreen({Key? key}) : super(key: key);
+class OperationsRecordScreen extends StatefulWidget {
+  const OperationsRecordScreen({super.key};
 
   @override
   State<OperationsRecordScreen> createState() => _OperationsRecordScreenState();
@@ -95,7 +95,7 @@ class _OperationsRecordScreenState extends State<OperationsRecordScreen> {
 
     // Save field values
     _fieldControllers.forEach((key, controller) {
-      draftData['fields'][key] = controller.text;
+      (draftData['fields'] as Map<String, dynamic>)[key] = controller.text;
     });
 
     try {
