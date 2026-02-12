@@ -1,4 +1,3 @@
-//Updated version-1
 // lib/services/database_service.dart - COMPLETE DatabaseService
 // Enhanced with all methods needed by registration screens
 
