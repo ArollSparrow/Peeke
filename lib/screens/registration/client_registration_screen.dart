@@ -7,7 +7,7 @@ import '../../utils/app_utils.dart';
 import '../../services/database_service.dart';
 
 class ClientRegistrationScreen extends StatefulWidget {
-  const ClientRegistrationScreen({super.key};
+  const ClientRegistrationScreen({super.key});
 
   @override
   State<ClientRegistrationScreen> createState() => _ClientRegistrationScreenState();

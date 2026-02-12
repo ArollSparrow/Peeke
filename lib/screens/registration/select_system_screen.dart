@@ -8,7 +8,7 @@ import '../../utils/app_utils.dart';
 import '../../services/database_service.dart';
 
 class SelectSystemScreen extends StatefulWidget {
-  const SelectSystemScreen({super.key};
+  const SelectSystemScreen({super.key});
 
   @override
   State<SelectSystemScreen> createState() => _SelectSystemScreenState();
