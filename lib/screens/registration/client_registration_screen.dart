@@ -9,13 +9,13 @@ import '../../utils/app_utils.dart';
 import '../../services/database_service.dart';
 
 class ClientRegistrationScreenextends StatefulWidget {
-  const ClientRegistrationScreenComplete({Key? key}) : super(key: key);
+  const ClientRegistrationScreen({Key? key}) : super(key: key);
 
   @override
-  State<ClientRegistrationScreenComplete> createState() => _ClientRegistrationScreenCompleteState();
+  State<ClientRegistrationScreen> createState() => _ClientRegistrationScreenState();
 }
 
-class _ClientRegistrationScreenCompleteState extends State<ClientRegistrationScreenComplete> {
+class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
   final _formKey = GlobalKey<FormState>();
   
   // Text controllers - equivalent to self.inputs
