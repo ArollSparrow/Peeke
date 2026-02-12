@@ -1,72 +1,28 @@
-// lib/screens/inventory/inventory_placeholder.dart
-// Placeholder screen for all Inventory features - to be implemented
-
 import 'package:flutter/material.dart';
-import '../../utils/app_utils.dart';
 
 class InventoryPlaceholder extends StatelessWidget {
   final String featureName;
-
-  const InventoryPlaceholder({
-    Key? key,
-    required this.featureName,
-  }) : super(key: key);
+  const InventoryPlaceholder({super.key, required this.featureName});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
-        title: Text(featureName),
+        backgroundColor: const Color(0xFF1E1E1E),
+        title: Text(featureName, style: const TextStyle(color: Colors.white)),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.inventory,
-                size: 100,
-                color: AppColors.accent.withOpacity(0.5),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                featureName,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.accent,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Coming Soon',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white.withOpacity(0.7),
-                ),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'This inventory feature is currently under development.\nIt will be available in the next update.',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.white.withOpacity(0.5),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 40),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.accent,
-                  foregroundColor: Colors.black,
-                ),
-                child: const Text('Back to Menu'),
-              ),
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.inventory_2, size: 80, color: Color(0xFF3399CC)),
+            const SizedBox(height: 24),
+            Text(featureName, style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 12),
+            const Text('Coming Soon', style: TextStyle(color: Color(0xFF888888), fontSize: 16)),
+          ],
         ),
       ),
     );
