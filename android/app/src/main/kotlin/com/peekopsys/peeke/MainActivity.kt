@@ -1,4 +1,4 @@
-package com.peekopsys.peek
+package com.peekopsys.peeke
 
 import io.flutter.embedding.android.FlutterActivity
 
