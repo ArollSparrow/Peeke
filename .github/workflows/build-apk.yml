@@ -130,7 +130,7 @@ jobs:
         # THIS IS THE FIX - creates the missing web/index.html
         # --platforms web only adds web support without touching
         # your existing android/ or lib/ files
-        run: flutter create . --platforms web
+        run: flutter create . --platforms web --project-name peeke
 
       - name: Build Web App
         run: |
@@ -159,6 +159,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Item | Detail |" >> $GITHUB_STEP_SUMMARY
           echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔗 URL | https://ArollSparrow.github.io/peeke |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔗 URL | https://ArollSparrow.github.io/Peeke |" >> $GITHUB_STEP_SUMMARY
           echo "| 🔒 Source Code | Private - Enterprise Protected |" >> $GITHUB_STEP_SUMMARY
           echo "| 📱 Works on | Any device with browser |" >> $GITHUB_STEP_SUMMARY
