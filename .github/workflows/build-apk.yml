@@ -7,14 +7,12 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
-# Enterprise GitHub Pages permissions
 permissions:
   contents: read
   pages: write
   id-token: write
   deployments: write
 
-# Prevent overlapping deployments
 concurrency:
   group: "peek-deployment"
   cancel-in-progress: true
@@ -24,7 +22,7 @@ jobs:
   # JOB 1: BUILD ANDROID APK
   # ============================================================
   build-apk:
-    name: 📱 Build Android APK
+    name: Build Android APK
     runs-on: ubuntu-latest
 
     steps:
@@ -91,22 +89,19 @@ jobs:
       - name: APK Build Summary
         run: |
           echo "## 📱 Peek APK Build Complete!" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| APK Variant | Size | Target |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------------|------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| APK Variant | Size |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------------|------|" >> $GITHUB_STEP_SUMMARY
           cd build/app/outputs/flutter-apk
           for file in *.apk; do
             size=$(du -h "$file" | cut -f1)
-            echo "| $file | $size | Download from Artifacts |" >> $GITHUB_STEP_SUMMARY
+            echo "| $file | $size |" >> $GITHUB_STEP_SUMMARY
           done
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "> Artifacts retained for **90 days**" >> $GITHUB_STEP_SUMMARY
 
   # ============================================================
   # JOB 2: BUILD + DEPLOY WEB (ENTERPRISE GITHUB PAGES)
   # ============================================================
   build-web:
-    name: 🌐 Build and Deploy Web App
+    name: Build and Deploy Web App
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request'
 
@@ -130,6 +125,12 @@ jobs:
 
       - name: Enable Flutter Web
         run: flutter config --enable-web
+
+      - name: Generate Web Folder
+        # THIS IS THE FIX - creates the missing web/index.html
+        # --platforms web only adds web support without touching
+        # your existing android/ or lib/ files
+        run: flutter create . --platforms web
 
       - name: Build Web App
         run: |
@@ -158,36 +159,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Item | Detail |" >> $GITHUB_STEP_SUMMARY
           echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔗 URL | https://PeekOpSys-Dev.github.io/Peeke |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔗 URL | https://ArollSparrow.github.io/Peeke |" >> $GITHUB_STEP_SUMMARY
           echo "| 🔒 Source Code | Private - Enterprise Protected |" >> $GITHUB_STEP_SUMMARY
-          echo "| 👥 Access | Invite-only testers |" >> $GITHUB_STEP_SUMMARY
           echo "| 📱 Works on | Any device with browser |" >> $GITHUB_STEP_SUMMARY
-        continue-on-error: true
-      
-      # Step 13: Create release summary
-      - name: Create Build Summary
-        run: |
-          echo "## 🎉 Build Successful!" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📱 APK Files Generated:" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          cd build/app/outputs/flutter-apk
-          for file in *.apk; do
-            size=$(du -h "$file" | cut -f1)
-            echo "- **$file** ($size)" >> $GITHUB_STEP_SUMMARY
-          done
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📦 Download Artifacts:" >> $GITHUB_STEP_SUMMARY
-          echo "Go to the **Actions** tab → Click on this workflow run → Download artifacts at the bottom" >> $GITHUB_STEP_SUMMARY
-      
-      # Step 14: Display APK info
-      - name: Display APK Info
-        run: |
-          cd build/app/outputs/flutter-apk
-          echo "==================================="
-          echo "📱 APK Build Complete!"
-          echo "==================================="
-          ls -lh *.apk
-          echo "==================================="
-          echo "✅ Download from Actions artifacts"
-          echo "==================================="
