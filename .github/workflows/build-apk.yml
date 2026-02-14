@@ -1,26 +1,12 @@
-name: Peek - Enterprise Build APK + Web
+#name: Build Android APK
 
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
-  workflow_dispatch:
+  workflow_dispatch:    # Manual trigger ONLY - no auto on push
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-  deployments: write
-
-concurrency:
-  group: "peek-deployment"
-  cancel-in-progress: true
 
 jobs:
-  # ============================================================
-  # JOB 1: BUILD ANDROID APK
-  # ============================================================
   build-apk:
     name: Build Android APK
     runs-on: ubuntu-latest
@@ -96,7 +82,5 @@ jobs:
             size=$(du -h "$file" | cut -f1)
             echo "| $file | $size |" >> $GITHUB_STEP_SUMMARY
           done
-
-  
-    
-          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> Artifacts retained for **90 days**" >> $GITHUB_STEP_SUMMARY
