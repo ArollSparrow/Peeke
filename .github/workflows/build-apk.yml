@@ -1,109 +1,167 @@
-name: Build Flutter APK
+name: Peek - Enterprise Build APK + Web
 
 on:
-  # Trigger on push to main branch
   push:
     branches: [ main, master ]
-  
-  # Trigger on pull request
   pull_request:
     branches: [ main, master ]
-  
-  # Allow manual trigger
   workflow_dispatch:
 
+# Enterprise GitHub Pages permissions
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  deployments: write
+
+# Prevent overlapping deployments
+concurrency:
+  group: "peek-deployment"
+  cancel-in-progress: true
+
 jobs:
-  build:
-    name: Build Flutter APK
+  # ============================================================
+  # JOB 1: BUILD ANDROID APK
+  # ============================================================
+  build-apk:
+    name: 📱 Build Android APK
     runs-on: ubuntu-latest
-    
+
     steps:
-      # Step 1: Checkout repository
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
-      # Step 2: Setup Java (required for Android build)
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
-      
-      # Step 3: Setup Flutter
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.0'
           channel: 'stable'
           cache: true
-      
-      # Step 4: Verify Flutter installation
-      - name: Verify Flutter
-        run: |
-          flutter --version
-          flutter doctor -v
-      
-      # Step 5: Get Flutter dependencies
+
       - name: Get Dependencies
         run: flutter pub get
-      
-      # Step 5b: Generate app icons (if icon file exists)
-      - name: Generate App Icons
-        run: |
-          if [ -f "assets/icon/icon.png" ]; then
-            echo "Icon file found, generating launcher icons..."
-            flutter pub run flutter_launcher_icons
-          else
-            echo "No custom icon found, using default Flutter icon"
-          fi
-        continue-on-error: true
-      
-      # Step 6: Analyze code (optional but recommended)
+
       - name: Analyze Code
         run: flutter analyze
         continue-on-error: true
-      
-      # Step 7: Build APK (Release mode)
-      - name: Build APK
+
+      - name: Build Universal APK
         run: flutter build apk --release
-      
-      # Step 8: Build split APKs (optional - creates smaller APKs per architecture)
+
       - name: Build Split APKs
         run: flutter build apk --split-per-abi --release
-      
-      # Step 9: Rename APK files for clarity
+
       - name: Rename APK Files
         run: |
           cd build/app/outputs/flutter-apk
           mv app-release.apk peek-universal-release.apk
-          mv app-armeabi-v7a-release.apk peek-armeabi-v7a-release.apk || true
           mv app-arm64-v8a-release.apk peek-arm64-v8a-release.apk || true
+          mv app-armeabi-v7a-release.apk peek-armeabi-v7a-release.apk || true
           mv app-x86_64-release.apk peek-x86_64-release.apk || true
-      
-      # Step 10: Upload Universal APK as artifact
+
       - name: Upload Universal APK
         uses: actions/upload-artifact@v4
         with:
           name: peek-universal-apk
           path: build/app/outputs/flutter-apk/peek-universal-release.apk
-          retention-days: 30
-      
-      # Step 11: Upload ARM64 APK (most common for modern devices)
+          retention-days: 90
+
       - name: Upload ARM64 APK
         uses: actions/upload-artifact@v4
         with:
           name: peek-arm64-apk
           path: build/app/outputs/flutter-apk/peek-arm64-v8a-release.apk
-          retention-days: 30
+          retention-days: 90
         continue-on-error: true
-      
-      # Step 12: Upload ARMv7 APK (for older devices)
+
       - name: Upload ARMv7 APK
         uses: actions/upload-artifact@v4
         with:
           name: peek-armv7-apk
           path: build/app/outputs/flutter-apk/peek-armeabi-v7a-release.apk
-          retention-days: 30
+          retention-days: 90
+        continue-on-error: true
+
+      - name: APK Build Summary
+        run: |
+          echo "## 📱 Peek APK Build Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| APK Variant | Size | Target |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------------|------|--------|" >> $GITHUB_STEP_SUMMARY
+          cd build/app/outputs/flutter-apk
+          for file in *.apk; do
+            size=$(du -h "$file" | cut -f1)
+            echo "| $file | $size | Download from Artifacts |" >> $GITHUB_STEP_SUMMARY
+          done
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> Artifacts retained for **90 days**" >> $GITHUB_STEP_SUMMARY
+
+  # ============================================================
+  # JOB 2: BUILD + DEPLOY WEB (ENTERPRISE GITHUB PAGES)
+  # ============================================================
+  build-web:
+    name: 🌐 Build and Deploy Web App
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
+          channel: 'stable'
+          cache: true
+
+      - name: Get Dependencies
+        run: flutter pub get
+
+      - name: Enable Flutter Web
+        run: flutter config --enable-web
+
+      - name: Build Web App
+        run: |
+          flutter build web --release \
+            --base-href "/Peeke/" \
+            --web-renderer canvaskit
+
+      - name: Add .nojekyll
+        run: touch build/web/.nojekyll
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Web Build
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Web Deployment Summary
+        run: |
+          echo "## 🌐 Peek Web App Deployed!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Item | Detail |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔗 URL | https://PeekOpSys-Dev.github.io/Peeke |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔒 Source Code | Private - Enterprise Protected |" >> $GITHUB_STEP_SUMMARY
+          echo "| 👥 Access | Invite-only testers |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📱 Works on | Any device with browser |" >> $GITHUB_STEP_SUMMARY
         continue-on-error: true
       
       # Step 13: Create release summary
