@@ -3,15 +3,15 @@ name: Deploy Web App
 on:
   workflow_dispatch:    # Manual trigger ONLY
 
+# Public repo - standard Pages permissions
 permissions:
   contents: read
   pages: write
   id-token: write
-  deployments: write
 
 concurrency:
-  group: "peek-web"
-  cancel-in-progress: true
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build-web:
@@ -53,8 +53,6 @@ jobs:
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
-        with:
-          enablement: true    # AUTO-ENABLES Pages if not already on!
 
       - name: Upload Web Build
         uses: actions/upload-pages-artifact@v3
@@ -71,6 +69,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Item | Detail |" >> $GITHUB_STEP_SUMMARY
           echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔗 URL | https://ArollSparrow.github.io/Peeke |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔒 Source Code | Private - Enterprise Protected |" >> $GITHUB_STEP_SUMMARY
-          echo "| 📱 Works on | Any device with browser |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔗 Live URL | https://ArollSparrow.github.io/Peeke |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📱 Works on | Any device with a browser |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔄 Next update | Just run this workflow again |" >> $GITHUB_STEP_SUMMARY
