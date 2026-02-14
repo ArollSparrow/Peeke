@@ -1,0 +1,76 @@
+name: Deploy Web App
+
+on:
+  workflow_dispatch:
+  # Only triggers manually OR when workflow file itself changes
+  # Does NOT run on every push - APK workflow handles that
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  deployments: write
+
+concurrency:
+  group: "peek-web"
+  cancel-in-progress: true
+
+jobs:
+  build-web:
+    name: Build and Deploy Web App
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
+          channel: 'stable'
+          cache: true
+
+      - name: Get Dependencies
+        run: flutter pub get
+
+      - name: Enable Flutter Web
+        run: flutter config --enable-web
+
+      - name: Generate Web Folder
+        run: flutter create . --platforms web --project-name peeke
+
+      - name: Build Web App
+        run: |
+          flutter build web --release \
+            --base-href "/Peeke/" \
+            --web-renderer canvaskit
+
+      - name: Add .nojekyll
+        run: touch build/web/.nojekyll
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Web Build
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Web Deployment Summary
+        run: |
+          echo "## 🌐 Peek Web App Deployed!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Item | Detail |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔗 URL | https://ArollSparrow.github.io/Peeke |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔒 Source Code | Private - Enterprise Protected |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📱 Works on | Any device with browser |" >> $GITHUB_STEP_SUMMARY
