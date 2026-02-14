@@ -1,9 +1,7 @@
 name: Deploy Web App
 
 on:
-  workflow_dispatch:
-  # Only triggers manually OR when workflow file itself changes
-  # Does NOT run on every push - APK workflow handles that
+  workflow_dispatch:    # Manual trigger ONLY
 
 permissions:
   contents: read
@@ -55,6 +53,8 @@ jobs:
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
+        with:
+          enablement: true    # AUTO-ENABLES Pages if not already on!
 
       - name: Upload Web Build
         uses: actions/upload-pages-artifact@v3
