@@ -2,8 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io' if (dart.library.html) 'dart:io';
+import 'package:path_provider/path_provider.dart'
+    if (dart.library.html) 'package:path_provider/path_provider.dart';
 
 // ====================== COLOR SCHEME ======================
 class AppColors {
@@ -388,6 +390,7 @@ class DateTimeRow extends StatelessWidget {
 class AppUtils {
   /// Get database path
   static Future<String> getDbPath() async {
+    if (kIsWeb) return 'peekopv1.db'; // Web: filename only
     final directory = await getApplicationDocumentsDirectory();
     final dbDir = Directory('${directory.path}/Database');
     if (!await dbDir.exists()) {
@@ -398,6 +401,7 @@ class AppUtils {
 
   /// Get export directory
   static Future<String> getExportDirectory([String category = 'Exports']) async {
+    if (kIsWeb) return category; // Web: no file system
     final directory = await getApplicationDocumentsDirectory();
     final exportDir = Directory('${directory.path}/Exports/$category');
     if (!await exportDir.exists()) {
