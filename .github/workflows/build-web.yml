@@ -47,6 +47,11 @@ jobs:
       - name: Add .nojekyll
         run: touch build/web/.nojekyll
 
+      - name: Debug Build Contents
+        run: |
+          echo "### Build/web folder contents:" >> $GITHUB_STEP_SUMMARY
+          ls -R build/web >> $GITHUB_STEP_SUMMARY
+
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
 
