@@ -10,26 +10,27 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # Core dependencies
+  # Core
   cupertino_icons: ^1.0.6
-  
-  # Database
+
+  # Database - sqflite for Android, ffi_web for browser
   sqflite: ^2.3.0
+  sqflite_common_ffi_web: ^0.4.3+1    # ← ONLY NEW ADDITION
   path: ^1.9.0
   path_provider: ^2.1.1
-  
+
   # State Management
   provider: ^6.1.1
-  
+
   # Date and Time
   intl: ^0.19.0
-  
+
   # Location/GPS
   geolocator: ^10.1.0
-  
+
   # Storage
   shared_preferences: ^2.2.2
-  
+
   # File System
   permission_handler: ^11.0.1
 
@@ -49,15 +50,5 @@ flutter_icons:
 
 flutter:
   uses-material-design: true
-
-  # Assets - Uncomment when you add icon
   assets:
     - assets/icon/
-
-  # Fonts (if needed)
-  # fonts:
-  #   - family: Roboto
-  #     fonts:
-  #       - asset: fonts/Roboto-Regular.ttf
-  #       - asset: fonts/Roboto-Bold.ttf
-  #         weight: 700
