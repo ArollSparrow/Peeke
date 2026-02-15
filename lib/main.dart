@@ -4,24 +4,34 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:async';
 import 'services/database_service.dart';
 import 'services/backup_service.dart';
 import 'routes.dart';
 
+// Web-only import - ignored on Android
+import 'services/database_service_web.dart'
+    if (dart.library.io) 'services/database_service_stub.dart';
+
 void main() async {
   // Ensure Flutter binding is initialized
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Lock to portrait mode
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-  
-  // Initialize database
-  await DatabaseService.instance.init();
-  
+
+  if (kIsWeb) {
+    // Web: initialise web-compatible database
+    await initWebDatabase();
+  } else {
+    // Lock to portrait mode
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
+    // Initialize database
+    await DatabaseService.instance.init();
+  }
+
   runApp(const PeekApp());
 }
 
@@ -39,9 +49,12 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    
+
     // Schedule periodic backups (every 10 seconds initially, then hourly)
-    _scheduleBackups();
+    // Backups only run on mobile - no file system on web
+    if (!kIsWeb) {
+      _scheduleBackups();
+    }
   }
 
   @override
@@ -57,7 +70,7 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
     Future.delayed(const Duration(seconds: 10), () {
       BackupService.instance.createBackup();
     });
-    
+
     // Then backup every hour
     _backupTimer = Timer.periodic(const Duration(hours: 1), (timer) {
       BackupService.instance.createBackup();
@@ -67,10 +80,11 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    
+
     // Backup when app is paused or stopped
-    if (state == AppLifecycleState.paused || 
-        state == AppLifecycleState.detached) {
+    if (!kIsWeb &&
+        (state == AppLifecycleState.paused ||
+            state == AppLifecycleState.detached)) {
       BackupService.instance.createBackup();
     }
   }
@@ -80,12 +94,12 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
     return MaterialApp(
       title: 'Peek™ - System Management',
       debugShowCheckedModeBanner: false,
-      
+
       // Dark theme
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
-        
+
         // Primary color - Sky Blue accent
         primaryColor: const Color(0xFF87CEEB),
         colorScheme: ColorScheme.dark(
@@ -95,10 +109,10 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
           background: const Color(0xFF121212),
           error: const Color(0xFFE64D4D),
         ),
-        
+
         // Scaffold background
         scaffoldBackgroundColor: const Color(0xFF121212),
-        
+
         // AppBar theme
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xFF1A1A1A),
@@ -111,7 +125,7 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
             fontWeight: FontWeight.bold,
           ),
         ),
-        
+
         // Card theme
         cardTheme: CardTheme(
           color: const Color(0xFF1E1E1E),
@@ -120,7 +134,7 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        
+
         // Elevated button theme
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
@@ -137,14 +151,14 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
             ),
           ),
         ),
-        
+
         // Text button theme
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
             foregroundColor: const Color(0xFF87CEEB),
           ),
         ),
-        
+
         // Input decoration theme
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
@@ -168,7 +182,7 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
           labelStyle: const TextStyle(color: Color(0xFF87CEEB)),
           hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
         ),
-        
+
         // Checkbox theme
         checkboxTheme: CheckboxThemeData(
           fillColor: MaterialStateProperty.resolveWith((states) {
@@ -179,19 +193,19 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
           }),
           checkColor: MaterialStateProperty.all(Colors.black),
         ),
-        
+
         // Icon theme
         iconTheme: const IconThemeData(
           color: Color(0xFF87CEEB),
         ),
       ),
-      
+
       // Initial route
       initialRoute: Routes.landing,
-      
+
       // Route generation
       onGenerateRoute: Routes.generateRoute,
-      
+
       // Unknown route handler
       onUnknownRoute: (settings) => MaterialPageRoute(
         builder: (context) => Scaffold(
