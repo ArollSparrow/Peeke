@@ -10,27 +10,26 @@ import 'services/database_service.dart';
 import 'services/backup_service.dart';
 import 'routes.dart';
 
-// Web-only import - ignored on Android
-import 'services/database_service_web.dart'
-    if (dart.library.io) 'services/database_service_stub.dart';
-
 void main() async {
   // Ensure Flutter binding is initialized
   WidgetsFlutterBinding.ensureInitialized();
 
   if (kIsWeb) {
-    // Web: initialise web-compatible database
-    await initWebDatabase();
-  } else {
-    // Lock to portrait mode
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-
-    // Initialize database
-    await DatabaseService.instance.init();
+    // Web: skip SQLite entirely - runs in preview/demo mode
+    // shared_preferences handles any web storage needed
+    runApp(const PeekApp());
+    return;
   }
+
+  // Mobile only below this line
+  // Lock to portrait mode
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  // Initialize database
+  await DatabaseService.instance.init();
 
   runApp(const PeekApp());
 }
