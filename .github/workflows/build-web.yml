@@ -38,12 +38,15 @@ jobs:
       - name: Enable Flutter Web
         run: flutter config --enable-web
 
+      - name: Generate Web Folder
+        run: flutter create . --platforms web --project-name peeke
+
       - name: Build Web App
-        # No flutter create needed - web/ folder is in the repo!
-        # html renderer = lightweight, works on all mobile browsers
         run: |
           flutter build web --release \
-            --web-renderer html
+            --web-renderer html \
+            --dart-define=FLUTTER_WEB_USE_SKIA=false \
+            --no-tree-shake-icons
 
       - name: Add .nojekyll
         run: touch build/web/.nojekyll
