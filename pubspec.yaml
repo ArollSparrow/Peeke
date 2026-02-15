@@ -13,9 +13,8 @@ dependencies:
   # Core
   cupertino_icons: ^1.0.6
 
-  # Database - sqflite for Android, ffi_web for browser
+  # Database (mobile only - web skips this)
   sqflite: ^2.3.0
-  sqflite_common_ffi_web: ^0.4.3+1    # ← ONLY NEW ADDITION
   path: ^1.9.0
   path_provider: ^2.1.1
 
@@ -28,7 +27,7 @@ dependencies:
   # Location/GPS
   geolocator: ^10.1.0
 
-  # Storage
+  # Storage (works on both web and mobile!)
   shared_preferences: ^2.2.2
 
   # File System
