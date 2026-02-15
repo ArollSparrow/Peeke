@@ -3,7 +3,6 @@ name: Deploy Web App
 on:
   workflow_dispatch:    # Manual trigger ONLY
 
-# Public repo - standard Pages permissions
 permissions:
   contents: read
   pages: write
@@ -39,14 +38,11 @@ jobs:
       - name: Enable Flutter Web
         run: flutter config --enable-web
 
-      - name: Generate Web Folder
-        run: flutter create . --platforms web --project-name peeke
-
       - name: Build Web App
         run: |
           flutter build web --release \
             --base-href "/Peeke/" \
-            --web-renderer html
+            --web-renderer canvaskit
 
       - name: Add .nojekyll
         run: touch build/web/.nojekyll
