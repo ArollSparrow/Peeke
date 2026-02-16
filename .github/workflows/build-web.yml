@@ -1,25 +1,15 @@
-name: Deploy Web App
+name: Deploy Web App to Vercel
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:    # Manual trigger ONLY
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
 
 jobs:
-  build-web:
-    name: Build and Deploy Web App
+  build-and-deploy:
+    name: Build Flutter Web + Deploy to Vercel
     runs-on: ubuntu-latest
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Checkout Repository
@@ -41,34 +31,34 @@ jobs:
       - name: Generate Web Folder
         run: flutter create . --platforms web --project-name peeke
 
-      - name: Build Web App
+      - name: Build Flutter Web
         run: |
           flutter build web --release \
             --web-renderer html \
-            --dart-define=FLUTTER_WEB_USE_SKIA=false \
             --no-tree-shake-icons
+        # Note: No --base-href needed for Vercel! It serves from root /
 
-      - name: Add .nojekyll
-        run: touch build/web/.nojekyll
+      - name: Install Vercel CLI
+        run: npm install -g vercel
 
-      - name: Setup GitHub Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload Web Build
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: build/web
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-
-      - name: Web Deployment Summary
+      - name: Deploy to Vercel
         run: |
-          echo "## 🌐 Peek Web App Deployed!" >> $GITHUB_STEP_SUMMARY
+          vercel deploy build/web \
+            --token=${{ secrets.VERCEL_TOKEN }} \
+            --prod \
+            --yes
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Deployment Summary
+        run: |
+          echo "## 🚀 Peek Deployed to Vercel!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Item | Detail |" >> $GITHUB_STEP_SUMMARY
           echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔗 Live URL | https://ArollSparrow.github.io/Peeke |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔗 Live URL | https://peeke.vercel.app |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔒 Source Code | Private on GitHub |" >> $GITHUB_STEP_SUMMARY
           echo "| 📱 Works on | Any device with a browser |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔄 Next update | Just run this workflow again |" >> $GITHUB_STEP_SUMMARY
+          echo "| ⚡ CDN | Vercel Edge Network (global) |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔄 Next update | Run this workflow again |" >> $GITHUB_STEP_SUMMARY
