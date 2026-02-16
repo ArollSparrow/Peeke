@@ -1,10 +1,11 @@
 // lib/services/database_service.dart - COMPLETE DatabaseService
 // Enhanced with all methods needed by registration screens
 
-import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart'
+    if (dart.library.html) 'package:path_provider/path_provider.dart';
 
 class DatabaseService {
   static final DatabaseService instance = DatabaseService._init();
@@ -13,6 +14,7 @@ class DatabaseService {
   DatabaseService._init();
 
   Future<Database> get database async {
+    if (kIsWeb) throw UnsupportedError('Database not available on web');
     if (_database != null) return _database!;
     _database = await _initDB('peekopv1.db');
     return _database!;
