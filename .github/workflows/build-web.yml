@@ -57,7 +57,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Item | Detail |" >> $GITHUB_STEP_SUMMARY
           echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔗 Live URL | https://peeke.vercel.app |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔗 Live URL | https://peeke-tau.vercel.app |" >> $GITHUB_STEP_SUMMARY
           echo "| 🔒 Source Code | Private on GitHub |" >> $GITHUB_STEP_SUMMARY
           echo "| 📱 Works on | Any device with a browser |" >> $GITHUB_STEP_SUMMARY
           echo "| ⚡ CDN | Vercel Edge Network (global) |" >> $GITHUB_STEP_SUMMARY
