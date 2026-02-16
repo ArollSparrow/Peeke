@@ -1,11 +1,10 @@
 // lib/services/database_service.dart - COMPLETE DatabaseService
-// Enhannced with all methods needed by registration screens
+// Enhanced with all methods needed by registration screens
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart'
-    if (dart.library.html) 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart';
 
 class DatabaseService {
   static final DatabaseService instance = DatabaseService._init();
@@ -14,7 +13,7 @@ class DatabaseService {
   DatabaseService._init();
 
   Future<Database> get database async {
-    if (kIsWeb) throw UnsupportedError('Database not available on web');
+    if (kIsWeb) throw UnsupportedError('Database not supported on web');
     if (_database != null) return _database!;
     _database = await _initDB('peekopv1.db');
     return _database!;
@@ -489,13 +488,9 @@ class DatabaseService {
 
   /// Get database file path
   Future<String> getDatabasePath() async {
-    final documentsDirectory = await getApplicationDocumentsDirectory();
-    final dbDirectory = Directory('${documentsDirectory.path}/Database');
-    
-    if (!await dbDirectory.exists()) {
-      await dbDirectory.create(recursive: true);
-    }
-    
-    return join(dbDirectory.path, 'peekopv1.db');
+    if (kIsWeb) return 'peekopv1.db';
+    // Use sqflite's built-in path (works on Android/iOS without dart:io Directory)
+    final dbPath = await getDatabasesPath();
+    return join(dbPath, 'peekopv1.db');
   }
 }
