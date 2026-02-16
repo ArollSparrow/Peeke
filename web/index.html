@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <base href="/Peeke/">
+  <base href="/">
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="Peek Operations System">
@@ -10,10 +10,9 @@
   <meta name="apple-mobile-web-app-title" content="Peek">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Peek</title>
+  <title>Peek™</title>
   <link rel="manifest" href="manifest.json">
   <script>
-    // The value below is injected by flutter build, do not touch.
     const serviceWorkerVersion = null;
   </script>
   <style>
@@ -21,7 +20,7 @@
       margin: 0;
       background-color: #121212;
     }
-    .loading {
+    #loading {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -29,33 +28,40 @@
       flex-direction: column;
       background-color: #121212;
     }
-    .loading-text {
-      color: #3399CC;
-      font-family: sans-serif;
-      font-size: 24px;
-      font-weight: bold;
-      margin-top: 20px;
-      letter-spacing: 4px;
-    }
     .spinner {
       width: 50px;
       height: 50px;
       border: 4px solid #1E1E1E;
-      border-top: 4px solid #3399CC;
+      border-top: 4px solid #87CEEB;
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
     @keyframes spin {
-      0% { transform: rotate(0deg); }
+      0%   { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
+    }
+    .loading-text {
+      color: #87CEEB;
+      font-family: sans-serif;
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: 20px;
+      letter-spacing: 6px;
+    }
+    .loading-sub {
+      color: rgba(255,255,255,0.4);
+      font-family: sans-serif;
+      font-size: 12px;
+      margin-top: 8px;
+      letter-spacing: 2px;
     }
   </style>
 </head>
 <body>
-  <!-- Loading screen shown while Flutter initialises -->
-  <div class="loading" id="loading">
+  <div id="loading">
     <div class="spinner"></div>
     <div class="loading-text">PEEK</div>
+    <div class="loading-sub">Every drop counts</div>
   </div>
 
   <script src="flutter.js" defer></script>
@@ -67,7 +73,6 @@
         },
         onEntrypointLoaded: function(engineInitializer) {
           engineInitializer.initializeEngine().then(function(appRunner) {
-            // Hide loading screen when app is ready
             document.getElementById('loading').style.display = 'none';
             appRunner.runApp();
           });
