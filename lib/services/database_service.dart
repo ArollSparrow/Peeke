@@ -1,5 +1,5 @@
 // lib/services/database_service.dart - COMPLETE DatabaseService
-// Enhanced with all methods needed by registration screens
+// Enhannced with all methods needed by registration screens
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:sqflite/sqflite.dart';
