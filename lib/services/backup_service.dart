@@ -2,10 +2,9 @@
 // Database backup and recovery service - equivalent to BackupManager in backup_recovery.py
 
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'dart:io' if (dart.library.html) 'dart:io';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart'
-    if (dart.library.html) 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:intl/intl.dart';
 import 'database_service.dart';
@@ -16,7 +15,7 @@ class BackupService {
 
   /// Create a database backup
   Future<bool> createBackup() async {
-    if (kIsWeb) return false; // Web: no file system
+    if (kIsWeb) return false;
     try {
       // Get database file
       final dbPath = await DatabaseService.instance.getDatabasePath();
@@ -86,7 +85,7 @@ class BackupService {
 
   /// List all backups
   Future<List<File>> listBackups() async {
-    if (kIsWeb) return []; // Web: no file system
+    if (kIsWeb) return [];
     try {
       final backupDir = await _getBackupDirectory();
       if (!await backupDir.exists()) {
@@ -113,7 +112,7 @@ class BackupService {
 
   /// Restore database from backup
   Future<bool> restoreBackup(File backupFile) async {
-    if (kIsWeb) return false; // Web: no file system
+    if (kIsWeb) return false;
     try {
       if (!await backupFile.exists()) {
         debugPrint('Backup file not found: ${backupFile.path}');
