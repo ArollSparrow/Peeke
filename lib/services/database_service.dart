@@ -115,6 +115,7 @@ class DatabaseService {
   }
 
   Future<void> init() async {
+    if (kIsWeb) return;
     await database;
   }
 
@@ -489,7 +490,6 @@ class DatabaseService {
   /// Get database file path
   Future<String> getDatabasePath() async {
     if (kIsWeb) return 'peekopv1.db';
-    // Use sqflite's built-in path (works on Android/iOS without dart:io Directory)
     final dbPath = await getDatabasesPath();
     return join(dbPath, 'peekopv1.db');
   }
