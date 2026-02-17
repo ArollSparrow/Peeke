@@ -1,6 +1,4 @@
-// Vercel workflow 
-
-name: Deploy Web App to Vercel
+name: Deploy Web App to Vercel#Vercel
 
 on:
   workflow_dispatch:    # Manual trigger ONLY
