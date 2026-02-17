@@ -35,6 +35,43 @@ class BackupService {
       // Create backup filename with timestamp
       final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
       final backupPath = path.join(backupDir.path, 'peekopv1_backup_$timestamp.db');
+// lib/services/backup_service.dart
+// Database backup,recovery service - equivalent to BackupManager to backup_recovery.py
+
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
+import 'package:intl/intl.dart';
+import 'database_service.dart';
+
+class BackupService {
+  static final BackupService instance = BackupService._internal();
+  BackupService._internal();
+
+  /// Create a database backup
+  Future<bool> createBackup() async {
+    if (kIsWeb) return false;
+    try {
+      // Get database file
+      final dbPath = await DatabaseService.instance.getDatabasePath();
+      final dbFile = File(dbPath);
+      
+      if (!await dbFile.exists()) {
+        debugPrint('Database file not found: $dbPath');
+        return false;
+      }
+
+      // Get backup directory
+      final backupDir = await _getBackupDirectory();
+      if (!await backupDir.exists()) {
+        await backupDir.create(recursive: true);
+      }
+
+      // Create backup filename with timestamp
+      final timestamp = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+      final backupPath = path.join(backupDir.path, 'peekopv1_backup_$timestamp.db');
       
       // Copy database file to backup location
       await dbFile.copy(backupPath);
