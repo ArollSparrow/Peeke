@@ -74,7 +74,7 @@ jobs:
 
       - name: APK Build Summary
         run: |
-          echo "## 📱 Peek APK Build Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "## 📱 Congratulations 🎉.Peeke APK Build Complete!" >> $GITHUB_STEP_SUMMARY
           echo "| APK Variant | Size |" >> $GITHUB_STEP_SUMMARY
           echo "|-------------|------|" >> $GITHUB_STEP_SUMMARY
           cd build/app/outputs/flutter-apk
