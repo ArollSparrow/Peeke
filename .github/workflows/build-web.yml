@@ -1,7 +1,9 @@
-name: Deploy Web App to Vercel#Vercel
+name: Deploy Web App to Vercel
 
 on:
-  workflow_dispatch:    # Manual trigger ONLY
+  push:
+    branches: [ main ]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -28,15 +30,11 @@ jobs:
       - name: Enable Flutter Web
         run: flutter config --enable-web
 
-      - name: Generate Web Folder
-        run: flutter create . --platforms web --project-name peeke
-
       - name: Build Flutter Web
         run: |
           flutter build web --release \
             --web-renderer html \
             --no-tree-shake-icons
-        # Note: No --base-href needed for Vercel! It serves from root /
 
       - name: Install Vercel CLI
         run: npm install -g vercel
@@ -53,12 +51,9 @@ jobs:
 
       - name: Deployment Summary
         run: |
-          echo "## 🚀 Peek Deployed to Vercel!" >> $GITHUB_STEP_SUMMARY
+          echo "## 🎉 Peeke Deployed to Vercel!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Item | Detail |" >> $GITHUB_STEP_SUMMARY
-          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
           echo "| 🔗 Live URL | https://peeke-tau.vercel.app |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔒 Source Code | Private on GitHub |" >> $GITHUB_STEP_SUMMARY
-          echo "| 📱 Works on | Any device with a browser |" >> $GITHUB_STEP_SUMMARY
-          echo "| ⚡ CDN | Vercel Edge Network (global) |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔄 Next update | Run this workflow again |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📦 Source Code | [View on GitHub](https://github.com/${{ github.repository }}) |" >> $GITHUB_STEP_SUMMARY
+          echo "| ⚙️ Works on | Any device with a browser |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🌐 CDN | Vercel Edge Network (global) |" >> $GITHUB_STEP_SUMMARY
