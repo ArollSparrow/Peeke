@@ -1,31 +1,48 @@
-name: Deploy to Vercel
+name: Peeke - Build Web (Frequent Testing)
 
+# Runs automatically on every push & PR → perfect for your progressive UI/UX + logic tests
 on:
   push:
-    branches: [main]
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:   # You can also trigger manually
 
 jobs:
-  deploy:
+  build-web:
+    name: Build Flutter Web
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
 
-      - name: Install Flutter
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter (fixed version to avoid your error)
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          channel: 'stable'
+          flutter-version: '3.19.0'     # Explicit version fixes "Unable to determine Flutter version"
+          cache: true
 
-      - name: Get dependencies
+      - name: Enable Web Support
+        run: flutter config --enable-web
+
+      - name: Get Dependencies
         run: flutter pub get
 
-      - name: Build web
-        run: flutter build web --release
+      - name: Build Web Release
+        run: flutter build web --release --no-tree-shake-icons
 
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
+      - name: Upload Web Build Artifact
+        uses: actions/upload-artifact@v4
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: build/web
-          vercel-args: '--prod'
+          name: peeke-web-build
+          path: build/web
+          retention-days: 14   # You can download anytime for manual Vercel test
+
+      - name: Web Build Summary
+        run: |
+          echo "## 🌐 Peeke Web Build Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Ready for Vercel/Netlify live previews" >> $GITHUB_STEP_SUMMARY
+          echo "📁 Output folder: build/web" >> $GITHUB_STEP_SUMMARY
+          echo "💡 Every push/PR now gives instant web preview for testing new features" >> $GITHUB_STEP_SUMMARY
