@@ -109,12 +109,12 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
           ),
         ),
 
-        // Fixed for Flutter web compatibility
+        // FIXED for Flutter web (const constructor + BorderRadius.all)
         cardTheme: const CardThemeData(
           color: Color(0xFF1E1E1E),
           elevation: 4,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
         ),
 
