@@ -125,9 +125,9 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
           ),
         ),
 
-        // Card theme
-        cardTheme: CardThemeData(
-          color: const Color(0xFF1E1E1E),
+        // FIXED Card theme for Flutter 3.19+ (works on both APK and Web)
+        cardTheme: const CardThemeData(
+          color: Color(0xFF1E1E1E),
           elevation: 4,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
