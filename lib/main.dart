@@ -1,6 +1,6 @@
 // lib/main.dart
-// Complete Flutter app entry point - equivalent to main.py
-// Includes: Database init, theme, routes, backup scheduling
+// Complete Flutter app entry point for Peek™ System Management
+// Works perfectly on APK (mobile) and Web (Vercel previews)
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,24 +11,20 @@ import 'services/backup_service.dart';
 import 'routes.dart';
 
 void main() async {
-  // Ensure Flutter binding is initialized
   WidgetsFlutterBinding.ensureInitialized();
 
   if (kIsWeb) {
-    // Web: skip SQLite entirely - runs in preview/demo mode
-    // shared_preferences handles any web storage needed
+    // Web: skip SQLite entirely - uses mock data for UI/UX + logic testing
     runApp(const PeekApp());
     return;
   }
 
-  // Mobile only below this line
-  // Lock to portrait mode
+  // Mobile only
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  // Initialize database
   await DatabaseService.instance.init();
 
   runApp(const PeekApp());
@@ -49,8 +45,6 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    // Schedule periodic backups (every 10 seconds initially, then hourly)
-    // Backups only run on mobile - no file system on web
     if (!kIsWeb) {
       _scheduleBackups();
     }
@@ -63,14 +57,11 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  /// Schedule periodic backups
   void _scheduleBackups() {
-    // Initial backup after 10 seconds
     Future.delayed(const Duration(seconds: 10), () {
       BackupService.instance.createBackup();
     });
 
-    // Then backup every hour
     _backupTimer = Timer.periodic(const Duration(hours: 1), (timer) {
       BackupService.instance.createBackup();
     });
@@ -79,11 +70,8 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-
-    // Backup when app is paused or stopped
     if (!kIsWeb &&
-        (state == AppLifecycleState.paused ||
-            state == AppLifecycleState.detached)) {
+        (state == AppLifecycleState.paused || state == AppLifecycleState.detached)) {
       BackupService.instance.createBackup();
     }
   }
@@ -94,18 +82,115 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
       title: 'Peek™ - System Management',
       debugShowCheckedModeBanner: false,
 
-      // Dark theme
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
 
-        // Primary color - Sky Blue accent
         primaryColor: const Color(0xFF87CEEB),
         colorScheme: ColorScheme.dark(
           primary: const Color(0xFF87CEEB),
           secondary: const Color(0xFF3399DC),
           surface: const Color(0xFF1A1A1A),
           background: const Color(0xFF121212),
+          error: const Color(0xFFE64D4D),
+        ),
+
+        scaffoldBackgroundColor: const Color(0xFF121212),
+
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF1A1A1A),
+          elevation: 0,
+          centerTitle: true,
+          iconTheme: IconThemeData(color: Color(0xFF87CEEB)),
+          titleTextStyle: TextStyle(
+            color: Color(0xFF87CEEB),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        // FIXED for Flutter web (CardThemeData + const shape)
+        cardTheme: const CardThemeData(
+          color: Color(0xFF1E1E1E),
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
+        ),
+
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF87CEEB),
+            foregroundColor: Colors.black,
+            elevation: 4,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            textStyle: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: const Color(0xFF87CEEB),
+          ),
+        ),
+
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: const Color(0xFF2A2A2A),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Color(0xFF87CEEB)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Color(0xFF87CEEB)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Color(0xFF87CEEB), width: 2),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Color(0xFFE64D4D)),
+          ),
+          labelStyle: const TextStyle(color: Color(0xFF87CEEB)),
+          hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
+        ),
+
+        checkboxTheme: CheckboxThemeData(
+          fillColor: MaterialStateProperty.resolveWith((states) {
+            if (states.contains(MaterialState.selected)) {
+              return const Color(0xFF87CEEB);
+            }
+            return Colors.transparent;
+          }),
+          checkColor: MaterialStateProperty.all(Colors.black),
+        ),
+
+        iconTheme: const IconThemeData(
+          color: Color(0xFF87CEEB),
+        ),
+      ),
+
+      initialRoute: Routes.landing,
+      onGenerateRoute: Routes.generateRoute,
+      onUnknownRoute: (settings) => MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(title: const Text('Error')),
+          body: Center(
+            child: Text('Route ${settings.name} not found'),
+          ),
+        ),
+      ),
+    );
+  }
+}          background: const Color(0xFF121212),
           error: const Color(0xFFE64D4D),
         ),
 
