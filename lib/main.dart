@@ -109,97 +109,12 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
           ),
         ),
 
-        // Classic CardTheme - 100% compatible with web + APK
+        // Classic CardTheme - works on both web and APK
         cardTheme: CardTheme(
           color: const Color(0xFF1E1E1E),
           elevation: 4,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF87CEEB),
-            foregroundColor: Colors.black,
-            elevation: 4,
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            textStyle: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-
-        textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(
-            foregroundColor: const Color(0xFF87CEEB),
-          ),
-        ),
-
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: const Color(0xFF2A2A2A),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Color(0xFF87CEEB)),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Color(0xFF87CEEB)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Color(0xFF87CEEB), width: 2),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Color(0xFFE64D4D)),
-          ),
-          labelStyle: const TextStyle(color: Color(0xFF87CEEB)),
-          hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
-        ),
-
-        checkboxTheme: CheckboxThemeData(
-          fillColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.selected)) {
-              return const Color(0xFF87CEEB);
-            }
-            return Colors.transparent;
-          }),
-          checkColor: MaterialStateProperty.all(Colors.black),
-        ),
-
-        iconTheme: const IconThemeData(
-          color: Color(0xFF87CEEB),
-        ),
-      ),
-
-      initialRoute: Routes.landing,
-      onGenerateRoute: Routes.generateRoute,
-      onUnknownRoute: (settings) => MaterialPageRoute(
-        builder: (context) => Scaffold(
-          appBar: AppBar(title: const Text('Error')),
-          body: Center(
-            child: Text('Route ${settings.name} not found'),
-          ),
-        ),
-      ),
-    );
-  }
-}            fontWeight: FontWeight.bold,
-          ),
-        ),
-
-        // FIXED for Flutter web (const constructor + BorderRadius.all)
-        cardTheme: const CardThemeData(
-          color: Color(0xFF1E1E1E),
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
         ),
 
