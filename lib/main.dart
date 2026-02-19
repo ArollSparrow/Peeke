@@ -14,7 +14,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (kIsWeb) {
-    // Web: skip SQLite entirely - uses mock data for UI/UX + logic testing
+    // Web: skip SQLite entirely - runs in preview/demo mode
     runApp(const PeekApp());
     return;
   }
@@ -109,12 +109,12 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
           ),
         ),
 
-        // FIXED for Flutter web (CardThemeData + const shape)
+        // Fixed for Flutter web compatibility
         cardTheme: const CardThemeData(
           color: Color(0xFF1E1E1E),
           elevation: 4,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12)),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
 
