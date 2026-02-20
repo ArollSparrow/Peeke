@@ -1,5 +1,5 @@
 // lib/main.dart
-// Complete Flutter app entry point for Peek™ System Management
+// Successful version from commit 70734d2 - Ready State on Vercel
 // Works perfectly on APK (mobile) and Web (Vercel previews)
 
 import 'package:flutter/material.dart';
@@ -109,7 +109,7 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
           ),
         ),
 
-        // Classic CardTheme - works on both web and APK
+        // Classic CardTheme - the version that succeeded in your "Ready State" deployment
         cardTheme: CardTheme(
           color: const Color(0xFF1E1E1E),
           elevation: 4,
