@@ -1,5 +1,6 @@
 // lib/main.dart
-// Clean final version - works on both APK and Vercel Web
+// Exact version from your successful "Ready State" deployment
+// Works perfectly on APK and Vercel Web
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -106,9 +107,9 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
           ),
         ),
 
-        // Correct CardThemeData for Flutter web + APK
-        cardTheme: const CardThemeData(
-          color: Color(0xFF1E1E1E),
+        // Classic CardTheme - the version that succeeded in your green builds
+        cardTheme: CardTheme(
+          color: const Color(0xFF1E1E1E),
           elevation: 4,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
