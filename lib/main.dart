@@ -109,7 +109,7 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
           ),
         ),
 
-        // Classic CardTheme - works on both web and APK
+        // Classic CardTheme - 100% compatible with web + APK
         cardTheme: CardTheme(
           color: const Color(0xFF1E1E1E),
           elevation: 4,
