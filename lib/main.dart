@@ -1,4 +1,4 @@
-// lib/main.dart(working)
+// lib/main.dart
 // Complete Flutter app entry point for Peek™ System Management
 // Works perfectly on APK (mobile) and Web (Vercel previews)
 
