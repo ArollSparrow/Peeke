@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy-web:
+  deploy-web:
     name: Build & Deploy to Vercel
     runs-on: ubuntu-latest
 
@@ -23,19 +23,17 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Enable Web & Get Dependencies
+      - name: Enable Web & Build
         run: |
           flutter config --enable-web
           flutter pub get
+          flutter build web --release --no-tree-shake-icons
 
-      - name: Build Web Release
-        run: flutter build web --release --no-tree-shake-icons
-
-      - name: Deploy to Vercel (Direct)
+      - name: Deploy to Vercel (Direct from GitHub Actions)
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}     # Optional: add if you have it
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }} # Optional: add if you have it
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--prod'
           working-directory: ./build/web
