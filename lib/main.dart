@@ -1,6 +1,6 @@
 // lib/main.dart
-// Complete Flutter app entry point for Peek™ System Management
-// Works perfectly on APK (mobile) and Web (Vercel previews)
+// Exact version from your successful "Ready State" deployment (the one that went live)
+// This is our stable current main.dart
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,12 +14,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (kIsWeb) {
-    // Web: skip SQLite entirely - runs in preview/demo mode
     runApp(const PeekApp());
     return;
   }
 
-  // Mobile only
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -109,12 +107,12 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
           ),
         ),
 
-        // FIXED for Flutter web (const constructor + BorderRadius.all)
-        cardTheme: const CardThemeData(
-          color: Color(0xFF1E1E1E),
+        // Classic CardTheme - the one that succeeded in your "Ready State" deployment
+        cardTheme: CardTheme(
+          color: const Color(0xFF1E1E1E),
           elevation: 4,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12)),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
 
