@@ -132,7 +132,7 @@ class LandingPage extends StatelessWidget {
               children: [
                 // Large watermark
                 Text(
-                  'Peek™',
+                  'Peeke™',
                   style: TextStyle(
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
