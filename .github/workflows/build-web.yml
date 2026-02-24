@@ -16,6 +16,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Setup Node.js (required for Vercel CLI)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -35,5 +40,5 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod --yes'   # <-- This skips all prompts forever
+          vercel-args: '--prod --yes'
           working-directory: ./build/web
