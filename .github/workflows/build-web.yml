@@ -35,10 +35,4 @@ jobs:
           flutter build web --release --no-tree-shake-icons
 
       - name: Deploy to Vercel (Fully Automatic, no prompts)
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod --yes'
-          working-directory: ./build/web
+        run: cd build/web && yes | npx vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.VERCEL_ORG_ID }} --project-id ${{ secrets.VERCEL_PROJECT_ID }}
