@@ -23,17 +23,17 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Build Web
+      - name: Build Web Release
         run: |
           flutter config --enable-web
           flutter pub get
           flutter build web --release --no-tree-shake-icons
 
-      - name: Deploy to Vercel
+      - name: Deploy to Vercel (Fully Automatic)
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
+          vercel-args: '--prod --yes'   # <-- This skips all prompts forever
           working-directory: ./build/web
