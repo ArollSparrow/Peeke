@@ -34,7 +34,7 @@ jobs:
           flutter pub get
           flutter build web --release --no-tree-shake-icons
 
-      - name: Deploy to Vercel (Fully Automatic)
+      - name: Deploy to Vercel (Fully Automatic, no prompts)
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
