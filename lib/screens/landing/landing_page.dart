@@ -134,7 +134,7 @@ class LandingPage extends StatelessWidget {
                 Text(
                   'Peeke™',
                   style: TextStyle(
-                    fontSize: 36,
+                    fontSize: 34,
                     fontWeight: FontWeight.bold,
                     color: Colors.black.withOpacity(0.2),
                   ),
@@ -156,7 +156,7 @@ class LandingPage extends StatelessWidget {
                 
                 // Copyright
                 Text(
-                  '© 2026 Peeke Systems',
+                  '© 2026 Peeke-Systems',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.white.withOpacity(0.6),
