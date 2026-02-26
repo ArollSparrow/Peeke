@@ -107,7 +107,7 @@ class LandingPage extends StatelessWidget {
                       
                       // Tap to continue hint
                       Text(
-                        'Tap menu to start',
+                        'Tap menu to start Frequent improvements to the app',
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.white.withOpacity(0.6),
