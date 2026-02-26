@@ -1,6 +1,5 @@
 // lib/main.dart
-// Stable version from your successful deployments
-// Works on APK and Vercel Web
+// Exact version from your successful deployment
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -107,7 +106,6 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
           ),
         ),
 
-        // Classic CardTheme - the version that worked in your successful deployments
         cardTheme: CardTheme(
           color: const Color(0xFF1E1E1E),
           elevation: 4,
