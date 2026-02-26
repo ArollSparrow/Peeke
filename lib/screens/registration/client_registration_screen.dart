@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../utils/app_utils.dart';
 import '../../services/database_service.dart';
+import 'system_registration_screen.dart'; // ← ADDED
 
 class ClientRegistrationScreen extends StatefulWidget {
   const ClientRegistrationScreen({super.key});
@@ -15,14 +16,14 @@ class ClientRegistrationScreen extends StatefulWidget {
 
 class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
   final _formKey = GlobalKey<FormState>();
-  
+
   // Controllers for all fields
   final _clientNameController = TextEditingController();
   final _siteNameController = TextEditingController();
   final _locationController = TextEditingController();
   final _contactController = TextEditingController();
   final _coordinatesController = TextEditingController();
-  
+
   // State variables
   bool _isExistingClient = false;
   int? _currentClientId;
@@ -30,7 +31,7 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
   bool _gpsRunning = false;
   String _gpsStatus = 'GPS: Ready';
   List<Map<String, dynamic>> _existingClients = [];
-  
+
   // Save buttons state
   bool _saveButtonEnabled = true;
   bool _saveAsNewButtonEnabled = false;
@@ -91,13 +92,14 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
       final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
-      
+
       setState(() {
-        _coordinatesController.text = '${position.latitude}, ${position.longitude}';
+        _coordinatesController.text =
+            '${position.latitude}, ${position.longitude}';
         _gpsStatus = 'GPS: Location acquired';
         _gpsRunning = false;
       });
-      
+
       if (mounted) {
         AppUtils.showSnackbar(context, 'Location acquired successfully');
       }
@@ -106,9 +108,10 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
         _gpsStatus = 'GPS: Error - $e';
         _gpsRunning = false;
       });
-      
+
       if (mounted) {
-        AppUtils.showSnackbar(context, 'Failed to get location: $e', isError: true);
+        AppUtils.showSnackbar(context, 'Failed to get location: $e',
+            isError: true);
       }
     }
   }
@@ -127,7 +130,8 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
 
     // Check for exact match with existing clients
     final exactMatch = _existingClients.firstWhere(
-      (client) => client['name'].toString().toLowerCase() == value.toLowerCase(),
+      (client) =>
+          client['name'].toString().toLowerCase() == value.toLowerCase(),
       orElse: () => {},
     );
 
@@ -148,17 +152,18 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
       _isExistingClient = true;
       _currentClientData = clientData;
       _currentClientId = clientData['id'];
-      
+
       _siteNameController.text = clientData['site_name'] ?? '';
       _locationController.text = clientData['location'] ?? '';
       _contactController.text = clientData['contact'] ?? '';
       _coordinatesController.text = clientData['location_coords'] ?? '';
-      
+
       _updateButtonStates();
     });
 
     if (mounted) {
-      AppUtils.showSnackbar(context, 'Existing client loaded: ${clientData['name']}');
+      AppUtils.showSnackbar(
+          context, 'Existing client loaded: ${clientData['name']}');
     }
   }
 
@@ -177,6 +182,35 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
     });
   }
 
+  // ──────────────────────────────────────────────────────────────
+  // HELPER — builds the full client data map from current fields
+  // and pushes SystemRegistrationScreen as a new route.
+  // Called after every save/attach action.
+  // ──────────────────────────────────────────────────────────────
+  void _navigateToSystemRegistration() {
+    if (_currentClientId == null) return;
+
+    final clientData = {
+      'id': _currentClientId,
+      'name': _clientNameController.text.trim(),
+      'site_name': _siteNameController.text.trim(),
+      'location': _locationController.text.trim(),
+      'contact': _contactController.text.trim(),
+      'location_coords': _coordinatesController.text.trim(),
+    };
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SystemRegistrationScreen(clientData: clientData),
+      ),
+    );
+  }
+
+  // ──────────────────────────────────────────────────────────────
+  // SAVE — new client or update existing.
+  // After inserting a brand-new client, navigate automatically.
+  // ──────────────────────────────────────────────────────────────
   Future<void> _saveOrUpdate() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -190,32 +224,44 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
 
     try {
       if (_isExistingClient && _currentClientId != null) {
-        // Update existing client
+        // Update existing client — no auto-navigation (data already existed)
         await DatabaseService.instance.updateClient(_currentClientId!, clientData);
         if (mounted) {
           AppUtils.showSnackbar(context, 'Client updated successfully');
         }
       } else {
-        // Insert new client
-        final clientId = await DatabaseService.instance.insertClient(clientData);
+        // ── NEW CLIENT saved ──
+        final clientId =
+            await DatabaseService.instance.insertClient(clientData);
         setState(() {
           _currentClientId = clientId;
           _isExistingClient = true;
           _proceedButtonEnabled = true;
         });
+
+        await _loadExistingClients();
+
         if (mounted) {
           AppUtils.showSnackbar(context, 'Client saved successfully');
+          // Auto-open SystemRegistrationScreen with the new client's details
+          _navigateToSystemRegistration();
         }
+        return; // skip the _loadExistingClients() call below
       }
-      
+
       await _loadExistingClients();
     } catch (e) {
       if (mounted) {
-        AppUtils.showSnackbar(context, 'Error saving client: $e', isError: true);
+        AppUtils.showSnackbar(context, 'Error saving client: $e',
+            isError: true);
       }
     }
   }
 
+  // ──────────────────────────────────────────────────────────────
+  // NEW SITE — existing client name, different site saved as new row.
+  // Navigate automatically after save.
+  // ──────────────────────────────────────────────────────────────
   Future<void> _saveAsNew() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -228,7 +274,8 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
     };
 
     try {
-      final clientId = await DatabaseService.instance.insertClient(clientData);
+      final clientId =
+          await DatabaseService.instance.insertClient(clientData);
       setState(() {
         _currentClientId = clientId;
         _isExistingClient = true;
@@ -236,33 +283,34 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
         _saveAsNewButtonEnabled = false;
         _saveButtonEnabled = false;
       });
-      
+
       await _loadExistingClients();
-      
+
       if (mounted) {
         AppUtils.showSnackbar(context, 'New site saved successfully');
+        // ── NEW SITE saved — auto-open SystemRegistrationScreen ──
+        _navigateToSystemRegistration();
       }
     } catch (e) {
       if (mounted) {
-        AppUtils.showSnackbar(context, 'Error saving new site: $e', isError: true);
+        AppUtils.showSnackbar(context, 'Error saving new site: $e',
+            isError: true);
       }
     }
   }
 
+  // ──────────────────────────────────────────────────────────────
+  // ATTACH — existing client selected, user taps ATTACH button.
+  // Navigate with full client details (was broken before).
+  // ──────────────────────────────────────────────────────────────
   void _proceedToSystemRegistration() {
     if (_currentClientId == null) {
-      AppUtils.showSnackbar(context, 'Please save client first', isError: true);
+      AppUtils.showSnackbar(context, 'Please save client first',
+          isError: true);
       return;
     }
-
-    Navigator.pushNamed(
-      context,
-      '/system_registration',
-      arguments: {
-        'client_id': _currentClientId,
-        'client_name': _clientNameController.text.trim(),
-      },
-    );
+    // ── EXISTING CLIENT attached — auto-open SystemRegistrationScreen ──
+    _navigateToSystemRegistration();
   }
 
   void _showClientMenu() {
@@ -309,7 +357,7 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
             title: 'Client Registration',
             includeClock: true,
           ),
-          
+
           // Form
           Expanded(
             child: Form(
@@ -323,35 +371,39 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
                     hint: 'Enter client name',
                     controller: _clientNameController,
                     required: true,
-                    validator: (value) => AppUtils.validateRequired(value, 'Client Name'),
+                    validator: (value) =>
+                        AppUtils.validateRequired(value, 'Client Name'),
                     onChanged: _onClientNameChanged,
                     suffixIcon: IconButton(
-                      icon: const Icon(Icons.arrow_drop_down, color: AppColors.accent),
+                      icon: const Icon(Icons.arrow_drop_down,
+                          color: AppColors.accent),
                       onPressed: _showClientMenu,
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Site Name
                   RoundedTextField(
                     label: 'Site Name',
                     hint: 'Enter site name',
                     controller: _siteNameController,
                     required: true,
-                    validator: (value) => AppUtils.validateRequired(value, 'Site Name'),
+                    validator: (value) =>
+                        AppUtils.validateRequired(value, 'Site Name'),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Location
                   RoundedTextField(
                     label: 'Location',
                     hint: 'Enter location',
                     controller: _locationController,
                     required: true,
-                    validator: (value) => AppUtils.validateRequired(value, 'Location'),
+                    validator: (value) =>
+                        AppUtils.validateRequired(value, 'Location'),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Contact
                   RoundedTextField(
                     label: 'Contact Number',
@@ -361,7 +413,7 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
                     validator: AppUtils.validatePhone,
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Coordinates with GPS button
                   Row(
                     children: [
@@ -376,11 +428,15 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
                       const SizedBox(width: 8),
                       ElevatedButton.icon(
                         onPressed: _getCurrentLocation,
-                        icon: Icon(_gpsRunning ? Icons.stop : Icons.gps_fixed),
+                        icon: Icon(
+                            _gpsRunning ? Icons.stop : Icons.gps_fixed),
                         label: Text(_gpsRunning ? 'Stop' : 'GPS'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _gpsRunning ? AppColors.danger : AppColors.primary,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          backgroundColor: _gpsRunning
+                              ? AppColors.danger
+                              : AppColors.primary,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
                         ),
                       ),
                     ],
@@ -397,7 +453,7 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
               ),
             ),
           ),
-          
+
           // Bottom buttons
           Container(
             padding: const EdgeInsets.all(16),
@@ -411,41 +467,47 @@ class _ClientRegistrationScreenState extends State<ClientRegistrationScreen> {
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.neutral,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 16),
                   ),
                   child: const Text('Back'),
                 ),
                 const Spacer(),
-                
+
                 // Save button
                 ElevatedButton(
                   onPressed: _saveButtonEnabled ? _saveOrUpdate : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.accent,
                     foregroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 16),
                   ),
                   child: const Text('SAVE'),
                 ),
                 const SizedBox(width: 8),
-                
+
                 // Save as New button
                 ElevatedButton(
                   onPressed: _saveAsNewButtonEnabled ? _saveAsNew : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.success,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 16),
                   ),
                   child: const Text('NEW SITE'),
                 ),
                 const SizedBox(width: 8),
-                
-                // Proceed button
+
+                // Proceed / Attach button
                 ElevatedButton(
-                  onPressed: _proceedButtonEnabled ? _proceedToSystemRegistration : null,
+                  onPressed: _proceedButtonEnabled
+                      ? _proceedToSystemRegistration
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF3399CC),
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 16),
                   ),
                   child: const Text('ATTACH'),
                 ),
