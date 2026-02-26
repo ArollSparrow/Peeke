@@ -107,6 +107,7 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
           ),
         ),
 
+        // Classic CardTheme - the version that worked in your successful deployments
         cardTheme: CardTheme(
           color: const Color(0xFF1E1E1E),
           elevation: 4,
