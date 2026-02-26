@@ -1,48 +1,44 @@
-name: Peeke - Build Web (Frequent Testing)
+name: Peeke - Build & Deploy Web (Direct to Vercel)
 
-# Runs automatically on every push & PR → perfect for your progressive UI/UX + logic tests
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch:   # You can also trigger manually
+  workflow_dispatch:
 
 jobs:
-  build-web:
-    name: Build Flutter Web
+  deploy:
+    name: Build & Deploy to Vercel
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Flutter (fixed version to avoid your error)
+      - name: Setup Node.js (required for Vercel CLI)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.19.0'
           channel: 'stable'
-          flutter-version: '3.19.0'     # Explicit version fixes "Unable to determine Flutter version"
           cache: true
 
-      - name: Enable Web Support
-        run: flutter config --enable-web
-
-      - name: Get Dependencies
-        run: flutter pub get
-
       - name: Build Web Release
-        run: flutter build web --release --no-tree-shake-icons
-
-      - name: Upload Web Build Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: peeke-web-build
-          path: build/web
-          retention-days: 14   # You can download anytime for manual Vercel test
-
-      - name: Web Build Summary
         run: |
-          echo "## 🌐 Peeke Web Build Complete!!" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Ready for Vercel/Netlify live previews" >> $GITHUB_STEP_SUMMARY
-          echo "📁 Output folder: build/web" >> $GITHUB_STEP_SUMMARY
-          echo "💡 Every push/PR now gives instant web preview for testing new features" >> $GITHUB_STEP_SUMMARY
+          flutter config --enable-web
+          flutter pub get
+          flutter build web --release --no-tree-shake-icons
+
+      - name: Deploy to Vercel (Fully Automatic, no prompts)
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prebuilt --prod --yes'
+          working-directory: ./build/web
