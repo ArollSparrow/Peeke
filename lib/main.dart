@@ -1,5 +1,5 @@
 // lib/main.dart
-// Stable version from your successful deployment (classic CardTheme)
+// Exact version from workflow #45 (the one that deployed successfully)
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -106,8 +106,9 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
           ),
         ),
 
-        cardTheme: CardTheme(
-          color: const Color(0xFF1E1E1E),
+        // CardThemeData from workflow #45 (worked with Vercel rebuild)
+        cardTheme: const CardThemeData(
+          color: Color(0xFF1E1E1E),
           elevation: 4,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
