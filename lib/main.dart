@@ -1,5 +1,5 @@
 // lib/main.dart
-// Exact version from your successful deployment
+// Stable version from your successful deployment (classic CardTheme)
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
