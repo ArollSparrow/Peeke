@@ -9,7 +9,7 @@ class SupabaseService {
 
   // ==================== MOCK KEYS - REPLACE THESE ====================
   static const String supabaseUrl = 'https://ggvdgkaptatlfepgnjkx.supabase.co';
-  static const String supabaseAnonKey = 'sb_publishable_8Ay3cS37hk9_x55ZYbmjtg_h1P_C0Zh';
+  static const String supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdndmRna2FwdGF0bGZlcGduamt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMDUzMzYsImV4cCI6MjA4Nzc4MTMzNn0.wxZ69PRzaSarw4b7-XWAAH0i0vNmpl-vTdgpCMRBfVQ';
   // =================================================================
 
   Future<void> initialize() async {
