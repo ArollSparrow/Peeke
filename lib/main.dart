@@ -12,9 +12,8 @@ import 'routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   if (kIsWeb) {
-    // Web: skip SQLite entirely - runs in preview/demo mode
+    await SupabaseService.instance.initialize();
     runApp(const PeekApp());
     return;
   }
