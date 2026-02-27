@@ -1,5 +1,5 @@
-name: peek
-description: Peek™ System Management - Complete system operations tracking
+name: peeke
+description: Peeke™ System Management - Complete system operations tracking
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -7,8 +7,9 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
+  supabase_flutter: ^2.5.0
   flutter:
-    sdk: flutter
+    sdk: flutter    
 
   # Core
   cupertino_icons: ^1.0.6
