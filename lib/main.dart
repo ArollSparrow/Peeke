@@ -14,7 +14,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (kIsWeb) {
     await SupabaseService.instance.initialize();
-    runApp(const PeekApp());
+    runApp(const PeekeApp());
     return;
   }
 
@@ -26,17 +26,17 @@ void main() async {
 
   await DatabaseService.instance.init();
 
-  runApp(const PeekApp());
+  runApp(const PeekeApp());
 }
 
-class PeekApp extends StatefulWidget {
+class PeekeApp extends StatefulWidget {
   const PeekApp({Key? key}) : super(key: key);
 
   @override
-  State<PeekApp> createState() => _PeekAppState();
+  State<PeekeApp> createState() => _PeekeAppState();
 }
 
-class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
+class _PeekeAppState extends State<PeekeApp> with WidgetsBindingObserver {
   Timer? _backupTimer;
 
   @override
@@ -78,7 +78,7 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Peek™ - System Management',
+      title: 'Peeke™ - System Management',
       debugShowCheckedModeBanner: false,
 
       theme: ThemeData(
