@@ -1,24 +1,26 @@
 // lib/main.dart
-// Complete Flutter app entry point for Peek™ System Management
-// Works perfectly on APK (mobile) and Web (Vercel previews)
+// Fully updated for PeekeApp + Hybrid Supabase (web) + SQLite (mobile)
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:async';
 import 'services/database_service.dart';
+import 'services/supabase_service.dart';
 import 'services/backup_service.dart';
 import 'routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // ====================== WEB (Pure Supabase) ======================
   if (kIsWeb) {
     await SupabaseService.instance.initialize();
     runApp(const PeekeApp());
     return;
   }
 
-  // Mobile only
+  // ====================== MOBILE (SQLite) ======================
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -30,7 +32,7 @@ void main() async {
 }
 
 class PeekeApp extends StatefulWidget {
-  const PeekApp({Key? key}) : super(key: key);
+  const PeekeApp({Key? key}) : super(key: key);
 
   @override
   State<PeekeApp> createState() => _PeekeAppState();
@@ -108,12 +110,11 @@ class _PeekeAppState extends State<PeekeApp> with WidgetsBindingObserver {
           ),
         ),
 
-        // FIXED for Flutter web (const constructor + BorderRadius.all)
-        cardTheme: const CardThemeData(
-          color: Color(0xFF1E1E1E),
+        cardTheme: CardTheme(
+          color: const Color(0xFF1E1E1E),
           elevation: 4,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12)),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
 
