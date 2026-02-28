@@ -1,5 +1,5 @@
 // lib/main.dart
-// Fully updated for PeekeApp + Hybrid Supabase (web) + SQLite (mobile)
+// Lifeline version (works on Vercel rebuild) + Supabase on Web
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,14 +13,14 @@ import 'routes.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ====================== WEB (Pure Supabase) ======================
+  // Web: Pure Supabase (your modeling platform)
   if (kIsWeb) {
     await SupabaseService.instance.initialize();
     runApp(const PeekeApp());
     return;
   }
 
-  // ====================== MOBILE (SQLite) ======================
+  // Mobile: Keep your existing SQLite
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -71,8 +71,7 @@ class _PeekeAppState extends State<PeekeApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if (!kIsWeb &&
-        (state == AppLifecycleState.paused || state == AppLifecycleState.detached)) {
+    if (!kIsWeb && (state == AppLifecycleState.paused || state == AppLifecycleState.detached)) {
       BackupService.instance.createBackup();
     }
   }
