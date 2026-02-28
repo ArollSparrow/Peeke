@@ -6,10 +6,16 @@ class SupabaseService {
 
   late final SupabaseClient supabase;
 
-  // ==================== REPLACE WITH YOUR REAL KEYS ====================
-  static const String supabaseUrl = 'https://your-project-ref.supabase.co';
-  static const String supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.your-real-anon-key';
-  // =================================================================
+  // Reads from GitHub Secrets / Vercel Environment Variables
+  final String supabaseUrl = const String.fromEnvironment(
+    'SUPABASE_URL',
+    defaultValue: 'https://your-project-ref.supabase.co',
+  );
+
+  final String supabaseAnonKey = const String.fromEnvironment(
+    'SUPABASE_ANON_KEY',
+    defaultValue: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.your-real-anon-key-here',
+  );
 
   Future<void> initialize() async {
     await Supabase.initialize(
@@ -20,13 +26,9 @@ class SupabaseService {
     print('✅ Supabase connected successfully on Web');
   }
 
-  // ==================== CLIENT METHODS ====================
-  Future<Map<String, dynamic>> addClient(Map<String, dynamic> clientData) async {
-    final response = await supabase
-        .from('clients')
-        .insert(clientData)
-        .select()
-        .single();
+  // ==================== CLIENTS ====================
+  Future<Map<String, dynamic>> addClient(Map<String, dynamic> data) async {
+    final response = await supabase.from('clients').insert(data).select().single();
     return response;
   }
 
@@ -35,13 +37,9 @@ class SupabaseService {
     return response;
   }
 
-  // ==================== SYSTEM METHODS ====================
-  Future<Map<String, dynamic>> addSystem(Map<String, dynamic> systemData) async {
-    final response = await supabase
-        .from('systems')
-        .insert(systemData)
-        .select()
-        .single();
+  // ==================== SYSTEMS ====================
+  Future<Map<String, dynamic>> addSystem(Map<String, dynamic> data) async {
+    final response = await supabase.from('systems').insert(data).select().single();
     return response;
   }
 
@@ -50,5 +48,37 @@ class SupabaseService {
     return response;
   }
 
-  // Add more methods later (operations, spare_parts, etc.)
+  // ==================== OPERATIONS ====================
+  Future<Map<String, dynamic>> addOperation(Map<String, dynamic> data) async {
+    final response = await supabase.from('operations').insert(data).select().single();
+    return response;
+  }
+
+  Future<List<dynamic>> getOperations() async {
+    final response = await supabase.from('operations').select();
+    return response;
+  }
+
+  // ==================== SPARE PARTS ====================
+  Future<Map<String, dynamic>> addSparePart(Map<String, dynamic> data) async {
+    final response = await supabase.from('spare_parts').insert(data).select().single();
+    return response;
+  }
+
+  Future<List<dynamic>> getSpareParts() async {
+    final response = await supabase.from('spare_parts').select();
+    return response;
+  }
+
+  // ==================== INVENTORY ====================
+  Future<Map<String, dynamic>> addInventoryTransaction(Map<String, dynamic> data) async {
+    final response = await supabase.from('inventory_transactions').insert(data).select().single();
+    return response;
+  }
+
+  // ==================== BACKUPS ====================
+  Future<Map<String, dynamic>> addBackup(Map<String, dynamic> data) async {
+    final response = await supabase.from('backups').insert(data).select().single();
+    return response;
+  }
 }
