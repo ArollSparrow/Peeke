@@ -1,26 +1,25 @@
 // lib/main.dart
-// Lifeline version (works on Vercel rebuild) + Supabase on Web
+// Complete Flutter app entry point for Peek™ System Management
+// Works perfectly on APK (mobile) and Web (Vercel previews)
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:async';
 import 'services/database_service.dart';
-import 'services/supabase_service.dart';
 import 'services/backup_service.dart';
 import 'routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Web: Pure Supabase (your modeling platform)
   if (kIsWeb) {
-    await SupabaseService.instance.initialize();
-    runApp(const PeekeApp());
+    // Web: skip SQLite entirely - runs in preview/demo mode
+    runApp(const PeekApp());
     return;
   }
 
-  // Mobile: Keep your existing SQLite
+  // Mobile only
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -28,17 +27,17 @@ void main() async {
 
   await DatabaseService.instance.init();
 
-  runApp(const PeekeApp());
+  runApp(const PeekApp());
 }
 
-class PeekeApp extends StatefulWidget {
-  const PeekeApp({Key? key}) : super(key: key);
+class PeekApp extends StatefulWidget {
+  const PeekApp({Key? key}) : super(key: key);
 
   @override
-  State<PeekeApp> createState() => _PeekeAppState();
+  State<PeekApp> createState() => _PeekAppState();
 }
 
-class _PeekeAppState extends State<PeekeApp> with WidgetsBindingObserver {
+class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
   Timer? _backupTimer;
 
   @override
@@ -71,7 +70,8 @@ class _PeekeAppState extends State<PeekeApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if (!kIsWeb && (state == AppLifecycleState.paused || state == AppLifecycleState.detached)) {
+    if (!kIsWeb &&
+        (state == AppLifecycleState.paused || state == AppLifecycleState.detached)) {
       BackupService.instance.createBackup();
     }
   }
@@ -79,7 +79,7 @@ class _PeekeAppState extends State<PeekeApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Peeke™ - System Management',
+      title: 'Peek™ - System Management',
       debugShowCheckedModeBanner: false,
 
       theme: ThemeData(
@@ -109,11 +109,12 @@ class _PeekeAppState extends State<PeekeApp> with WidgetsBindingObserver {
           ),
         ),
 
-        cardTheme: CardTheme(
-          color: const Color(0xFF1E1E1E),
+        // FIXED for Flutter web (const constructor + BorderRadius.all)
+        cardTheme: const CardThemeData(
+          color: Color(0xFF1E1E1E),
           elevation: 4,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
         ),
 
