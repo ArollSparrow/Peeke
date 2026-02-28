@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:async';
 import 'services/database_service.dart';
-import 'services/supabase_service.dart';   // ← Added for web
+import 'services/supabase_service.dart';
 import 'services/backup_service.dart';
 import 'routes.dart';
 
@@ -110,7 +110,6 @@ class _PeekAppState extends State<PeekApp> with WidgetsBindingObserver {
           ),
         ),
 
-        // Your exact lifeline CardThemeData that works on Vercel
         cardTheme: const CardThemeData(
           color: Color(0xFF1E1E1E),
           elevation: 4,
